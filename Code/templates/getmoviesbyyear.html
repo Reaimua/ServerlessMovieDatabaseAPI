@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serverless API</title>
+    <title>Get Movies by Year</title>
 </head>
 <body>
-    <h1>Welcome to my "Very Good" API</h1>
+    <h1>Get Movies by Year (2010-2020)</h1>
     <a href="{{ url_for('index')}}"> Home</a>
-
-    <p>Different Functions</p>
-    <li><a href="{{ url_for('get_movies_json')}}"> Get Movies </a></li>
-    <li>Get Movies by Year </li>
+    <p>Now choose the year you want to receive the best movies from:</p>
+    
     <form action="/getmoviesbyyear" method="GET">
         <label for="year">Choose a year:</label>
-        <input type="number" id="year" name="year" min="2000" max="2010">
+        <input type="number" id="year" name="year" min="2010" max="2020">
         <button type="submit">Get Movies</button>
     </form>
+
 </body>
 </html>
