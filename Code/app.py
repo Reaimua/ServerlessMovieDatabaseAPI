@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 from transformers import pipeline
 import requests
 import boto3
+import urllib.parse
 
 
 app = Flask(__name__)
@@ -67,20 +68,33 @@ def get_movies_by_year():
     filtered_movies = [movie for movie in formatted_movies if movie["releaseYear"] == user_provided_year]
     return jsonify (filtered_movies)
         
+import requests
+from flask import request, jsonify
+
 @app.route('/getMovieSummaries')
 def get_movie_summaries():
-    formatted_movies = fetch_and_format_movies()
+    # Extract movie title from request parameters
     movie_title = request.args.get('title')
+    API_key = "cceac696bb8b6f4b878ec456452151b7"
     
     if not movie_title:
         return "You need to provide a movie title!", 400
-    
-    movie = next((movie for movie in formatted_movies if movie["title"] == movie_title), None)
-    if not movie:
-        return f"No movie found with the title '{movie_title}'", 404
-    
-    movie_summary = summarizer(movie_title, max_length=150, min_length=30, do_sample=False)[0]['summary_text']
-    return jsonify({"title": movie_title, "summary": movie_summary})
+        
+    # Make API request to TMDb
+    encoded_title = urllib.parse.quote(movie_title)
+    url = f"https://api.themoviedb.org/3/search/movie?query={encoded_title}&include_adult=false&language=en-US&page=1&api_key={API_key}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        # Parse response and extract summary
+        data = response.json()
+        if data['results']:
+            summary = data['results'][0].get('overview', 'Summary not available')
+            return jsonify({"title": movie_title, "summary": summary})
+        else:
+            return f"No movie found with the title '{movie_title}'", 404
+    else:
+        return "Failed to fetch movie summary", response.status_code
 
 if __name__ == '__main__':  
     app.run(debug=True)

@@ -3,27 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serverless API</title>
+    <title>Welcome to my "Serverless Movie API</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        nav {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #007bff;
+            margin-left: 20px;
+        }
+        p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        ol {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: calc(30% - 10px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to my "Very Good" API</h1>
-    <a href="{{ url_for('index')}}"> Home</a>
+    <div class="container">
+        <h1>Welcome to my "Very Good" API</h1>
+        <h4 style="text-align:center;"> This List is comprised of the top 10 movies of each year from 2000-2010</h4>
 
-    <p>Different Functions</p>
-    <ol><a href="{{ url_for('get_movies_json')}}"> Get Movies </a></ol>
-    
-    <ol>Get Movies by Year</ol>
-    <form action="/getmoviesbyyear" method="GET">
-        <label for="year">Choose a year:</label>
-        <input type="number" id="year" name="year" min="2000" max="2010">
-        <button type="submit">Get Movies</button>
-    </form>
-
-    <ol>Movie Summary Generator</ol>
-    <form action="/getMovieSummaries" method="GET">
-        <label for="movie_title">Enter Movie Title:</label>
-        <input type="text" id="movie_title" name="title" required>
-        <button type="submit">Generate Summary</button>
-    </form>
+        <h2 style="text-align: center;">Functions</h2>
+        <ol>
+            <li><h3><a href="{{ url_for('get_movies_json')}}" target="_blank">Get Movies</a></h3></li>
+        
+            <li><h3>Get Movies by Year:</h3></li>
+            <form action="/getmoviesbyyear" method="GET" target="_blank">
+                <label for="year">Choose a year:</label>
+                <input type="number" id="year" name="year" min="2000" max="2010" required>
+                <button type="submit">Get Movies</button>
+            </form>
+            <li><h3>Movie Summary Generator:</h3></li>
+            <form action="/getMovieSummaries" method="GET" target="_blank">
+                <label for="movie_title">Enter Movie Title:</label>
+                <input type="text" id="movie_title" name="title" required>
+                <button type="submit">Generate Summary</button>
+            </form>
+        </ol>
+    </div>
 </body>
 </html>
