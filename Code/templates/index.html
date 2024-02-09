@@ -10,12 +10,20 @@
     <a href="{{ url_for('index')}}"> Home</a>
 
     <p>Different Functions</p>
-    <li><a href="{{ url_for('get_movies_json')}}"> Get Movies </a></li>
-    <li>Get Movies by Year </li>
+    <ol><a href="{{ url_for('get_movies_json')}}"> Get Movies </a></ol>
+    
+    <ol>Get Movies by Year</ol>
     <form action="/getmoviesbyyear" method="GET">
         <label for="year">Choose a year:</label>
         <input type="number" id="year" name="year" min="2000" max="2010">
         <button type="submit">Get Movies</button>
+    </form>
+
+    <ol>Movie Summary Generator</ol>
+    <form action="/getMovieSummaries" method="GET">
+        <label for="movie_title">Enter Movie Title:</label>
+        <input type="text" id="movie_title" name="title" required>
+        <button type="submit">Generate Summary</button>
     </form>
 </body>
 </html>

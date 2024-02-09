@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify, request
+from transformers import pipeline
 import requests
 import boto3
+
 
 app = Flask(__name__)
 
@@ -13,6 +15,8 @@ dynamodb = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                           aws_secret_access_key=aws_secret_access_key,
                           region_name=region_name)
 table = dynamodb.Table(table_name)
+
+summarizer = pipeline("summarization")
 
 #this is the homepage of everything else
 @app.route('/')
@@ -35,7 +39,8 @@ def fetch_and_format_movies():
                 'MovieID': int(dynamodb_movie['MovieID']['S']),
                 'title': dynamodb_movie['title']['S'],
                 'releaseYear': int(dynamodb_movie['releaseYear']['S']),
-                'genre': dynamodb_movie['genre']['S']
+                'genre': dynamodb_movie['genre']['S'],
+                'coverimage' : dynamodb_movie['coverimage']['S']
             }
             formatted_movies.append(movie)
         # Sort the movies by MovieID
@@ -43,7 +48,7 @@ def fetch_and_format_movies():
         
     return formatted_movies
 
-#this is the getting movies page
+#this is the getting movies page332
 @app.route('/getmovies')
 def get_movies_json():
     formatted_movies = fetch_and_format_movies()
@@ -62,5 +67,22 @@ def get_movies_by_year():
     filtered_movies = [movie for movie in formatted_movies if movie["releaseYear"] == user_provided_year]
     return jsonify (filtered_movies)
         
+@app.route('/getMovieSummaries')
+def get_movie_summaries():
+    formatted_movies = fetch_and_format_movies()
+    movie_title = request.args.get('title')
+    
+    if not movie_title:
+        return "You need to provide a movie title!", 400
+    
+    movie = next((movie for movie in formatted_movies if movie["title"] == movie_title), None)
+    if not movie:
+        return f"No movie found with the title '{movie_title}'", 404
+    
+    movie_summary = summarizer(movie_title, max_length=150, min_length=30, do_sample=False)[0]['summary_text']
+    return jsonify({"title": movie_title, "summary": movie_summary})
+
 if __name__ == '__main__':  
     app.run(debug=True)
+
+
