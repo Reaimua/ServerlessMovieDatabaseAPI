@@ -26,7 +26,7 @@ def index():
 
 def fetch_and_format_movies():
     formatted_movies = []  # Initialize the list to store formatted movies
-    
+
     # Fetch movie data from DynamoDB
     response = requests.get('https://tibsep5k93.execute-api.us-east-1.amazonaws.com/default/GetMoviesLambda')
     
