@@ -1,7 +1,11 @@
 # PythonServerlessAPI
 
 ## Overview 
-This project focuses on developing a serverless movie API using Python within the context of the [6 Month Cloud Study Plan](https://www.madebygps.com/cloudcamp/). The goal is to gain practical experience in building cloud-native applications leveraging serverless architecture and AWS services. 
+This project focuses on developing a serverless movie API using Python within the context of the 6 Month Cloud Study Plan. The goal is to gain practical experience in building cloud-native applications leveraging serverless architecture and AWS services. The project aims to simplify movie data access using serverless functions, with a setup including a NoSQL database, cloud storage, and serverless functions.
+
+## Introduction
+
+With this project, you can efficiently store and retrieve movie details using serverless functions. The API offers three functions: GetMovies, returning a JSON list of movies with cover image URLs; GetMoviesByYear, retrieving movies by year; and GetMovieSummary, fetching movie summaries from The Movie Database (TMDb). This approach simplifies movie data access and provides a seamless experience for users.
 
 ## Technologies Used
 - AWS Lambda
@@ -41,35 +45,55 @@ formatted_movies = []  # Initialize the list to store formatted movies
 ```
 ###  getmovies
 
+This snippet establishes a route '/getmovies' for a Flask web app. When accessed via a GET request, it calls get_movies_json(). This function fetches and formats movie data, then returns it as JSON. In short, '/getmovies' provides movie data in JSON format.
 ```python
-{
-    "title": "title of the movie",
-    "releaseYear": "when the movie was released",
-    "genre": "genre of the movie",
-    "coverUrl": "url-to-image-in-cloud-storage"
-}
+def get_movies_json():
+    formatted_movies = fetch_and_format_movies()
+    return jsonify(formatted_movies) 
 ```
 ### getmoviesbyyear
-```json
-  {
-    "MovieID": 1011,
-    "coverimage": "https://movielistimages.s3.amazonaws.com/p3542039_v_v13_ad.jpg",
-    "genre": "Action, Adventure, Fantasy",
-    "releaseYear": 2009,
-    "title": "Avatar"
-  },
-  {
-    "MovieID": 1012,
-    "coverimage": "https://movielistimages.s3.amazonaws.com/p190662_p_v12_ay.jpg",
-    "genre": "Animation, Adventure, Comedy",
-    "releaseYear": 2009,
-    "title": "Up"
-  }
+
+This code, get_movies_by_year(), filters movie data based on the user's provided year. It fetches and formats the movie data, then extracts the user-provided year from the request parameters. If no year is provided or the year is not between 2000 and 2010, it returns an error message with a 404 status code. Otherwise, it filters the movies by the provided year and returns them in JSON format. In short, it helps users find movies released in a specific year between 2000 and 2010.
+```python
+def get_movies_by_year():
+    formatted_movies = fetch_and_format_movies()
+    user_provided_year = request.args.get('year', type=int)
+
+    # Return a response based on the filtered movies
+    if user_provided_year is None:
+        return "You need to choose a year!", 404
+    elif user_provided_year < 2000 or user_provided_year > 2010:
+        return "Please Choose a movie year between 2000 and 2010!", 404
+    filtered_movies = [movie for movie in formatted_movies if movie["releaseYear"] == user_provided_year]
+    return jsonify (filtered_movies)
+
 ```
 ### getMovieSummaries
-```json
-{
-  "summary": "Summary of the Movie inputted",
-  "title": "title of the movie"
-}
+
+The get_movie_summaries() function fetches movie summaries based on titles. It extracts the movie title from the request parameters, queries The Movie Database (TMDb) using an API key, and returns the summary of the first movie in JSON format. If no movie is found, it returns a 404 error; if no title is provided or the request fails, it returns a 400 error. This function simplifies the process of getting movie summaries from TMDb.
+
+```python
+def get_movie_summaries():
+    # Extract movie title from request parameters
+    movie_title = request.args.get('title')
+    API_key = "YOUR_TMDB_API_KEY"
+    
+    if not movie_title:
+        return "You need to provide a movie title!", 400
+        
+    # Make API request to TMDb
+    encoded_title = urllib.parse.quote(movie_title)
+    url = f"https://api.themoviedb.org/3/search/movie?query={encoded_title}&include_adult=false&language=en-US&page=1&api_key={API_key}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        # Parse response and extract summary
+        data = response.json()
+        if data['results']:
+            summary = data['results'][0].get('overview', 'Summary not available')
+            return jsonify({"title": movie_title, "summary": summary})
+        else:
+            return f"No movie found with the title '{movie_title}'", 404
+    else:
+        return "Failed to fetch movie summary", response.status_code
 ```
