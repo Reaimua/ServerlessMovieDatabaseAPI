@@ -7,10 +7,10 @@ import urllib.parse
 
 app = Flask(__name__)
 
-aws_access_key_id = 'AKIARHNZ4AF3AJUQP645'
-aws_secret_access_key = 'NJQMtcv6hp2h7NUMLECAXgPI8vXG5wH1wjhHSYY6'
-region_name = 'us-east-1'
-table_name = 'MovieList'
+aws_access_key_id = 'YOUR_AWS_ACCESS_KEY_ID'
+aws_secret_access_key = 'YOUR_AWS_SECRET_ACCESSKEY'
+region_name = 'YOUR_REGION'
+table_name = 'YOUR_DYNAMODB_TABLE_NAME'
 
 dynamodb = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                           aws_secret_access_key=aws_secret_access_key,
@@ -28,7 +28,7 @@ def fetch_and_format_movies():
     formatted_movies = []  # Initialize the list to store formatted movies
 
     # Fetch movie data from DynamoDB
-    response = requests.get('https://tibsep5k93.execute-api.us-east-1.amazonaws.com/default/GetMoviesLambda')
+    response = requests.get('YOUR_GATEWAY_API_LINK')
     
     # Check if the request was successful
     if response.status_code == 200:
@@ -49,7 +49,7 @@ def fetch_and_format_movies():
         
     return formatted_movies
 
-#this is the getting movies page332
+#this is the getting movies page
 @app.route('/getmovies')
 def get_movies_json():
     formatted_movies = fetch_and_format_movies()
@@ -75,7 +75,7 @@ from flask import request, jsonify
 def get_movie_summaries():
     # Extract movie title from request parameters
     movie_title = request.args.get('title')
-    API_key = "cceac696bb8b6f4b878ec456452151b7"
+    API_key = "YOUR_TMDB_API_KEY"
     
     if not movie_title:
         return "You need to provide a movie title!", 400

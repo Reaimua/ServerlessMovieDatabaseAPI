@@ -1,9 +1,9 @@
 import boto3
 
-aws_access_key_id = 'AKIARHNZ4AF3AJUQP645'
-aws_secret_access_key = 'NJQMtcv6hp2h7NUMLECAXgPI8vXG5wH1wjhHSYY6'
-region_name = 'us-east-1'
-table_name = 'MovieList'
+aws_access_key_id = 'YOURAWSACCESSKEYID'
+aws_secret_access_key = 'YOURAWSSECRETACCESSKEY'
+region_name = 'YOUR_REGION'
+table_name = 'YOUR_DYNAMODB_TABLE_NAME'
 
 dynamodb = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                           aws_secret_access_key=aws_secret_access_key,
