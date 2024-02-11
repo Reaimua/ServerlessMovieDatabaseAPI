@@ -1,4 +1,4 @@
-# PythonServerlessAPI
+# ServerlessMovieAPI
 
 ## Overview 
 This project focuses on developing a serverless movie API using Python within the context of the 6 Month Cloud Study Plan. The goal is to gain practical experience in building cloud-native applications leveraging serverless architecture and AWS services. The project aims to simplify movie data access using serverless functions, with a setup including a NoSQL database, cloud storage, and serverless functions.
